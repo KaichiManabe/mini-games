@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&amp;display=block");
+svg{--bg:#eef1f6;--fg:#1d2433;--muted:#6b7488;--card:#ffffff;--hl:#f0b429;--p1:#2f5bd3;--p2:#d9466f;
+--p1-soft:rgba(47,91,211,.18);--p2-soft:rgba(217,70,111,.18);--bg-soft:#e3e8f1;--ink:#1d2433;--line:#cfd5e1;
+--paper:#fbf8f1;--felt:#1e2d29;--gold:#e8b64c;--tile:#f7f1e6;--tile-edge:#cbb894}
+text{font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN',sans-serif}
+</style>
+<rect width="1200" height="630" fill="var(--bg)"/>
+<rect x="56" y="56" width="560" height="518" rx="36" fill="var(--felt)"/>
+<svg x="86" y="141" width="500" height="350" viewBox="0 0 120 84">
+            <g font-family="M PLUS Rounded 1c, Hiragino Maru Gothic ProN, sans-serif" font-weight="800" text-anchor="middle">
+              <rect x="14" y="10" width="40" height="56" rx="6" fill="#f6f3ea" stroke="var(--gold)" stroke-width="3"/>
+              <text x="34" y="50" font-size="30" fill="#22243a">3</text>
+              <rect x="66" y="18" width="40" height="56" rx="6" fill="#f6f3ea"/>
+              <text x="86" y="58" font-size="30" fill="#22243a">9</text>
+            </g>
+          </svg>
+<circle cx="670" cy="132" r="14" fill="var(--p1)"/><circle cx="690.3" cy="132" r="14" fill="var(--p2)" fill-opacity=".9"/><text x="714.3" y="142.8" font-size="30" font-weight="800" fill="var(--fg)">ふたりあそび</text>
+<text x="668" y="300" font-size="83" font-weight="800" fill="var(--fg)">数字ポーカー</text>
+<text x="670" y="364" font-size="34" font-weight="800" fill="var(--muted)">1〜10で読み合う心理戦</text>
+<g font-size="24" font-weight="800">
+  <rect x="668" y="420" width="156" height="48" rx="24" fill="var(--card)"/><text x="746" y="452" text-anchor="middle" fill="var(--fg)">2人対戦</text>
+  <rect x="836" y="420" width="104" height="48" rx="24" fill="var(--card)"/><text x="888" y="452" text-anchor="middle" fill="var(--fg)">無料</text>
+  <rect x="952" y="420" width="164" height="48" rx="24" fill="var(--card)"/><text x="1034" y="452" text-anchor="middle" fill="var(--fg)">スマホ1台</text>
+</g>
+<text x="670" y="548" font-size="22" fill="var(--muted)">futari-asobi.pages.dev</text>
+</svg>
