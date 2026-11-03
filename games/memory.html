@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ふたりの神経衰弱</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<style>
+/* Layout: one-screen pass-and-play. Score strip, size switch, card grid, rules line. */
+:root{
+  --bg:#eef1f6; --fg:#1d2433; --muted:#6b7488; --card:#ffffff; --back1:#3b4a7a; --back2:#34426d; --face:#fbf8f1; --hl:#f0b429;
+  --p1:#2f5bd3; --p2:#d9466f; --p1-soft:rgba(47,91,211,.16); --p2-soft:rgba(217,70,111,.16);
+  --font:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --card:#1c2130; --back1:#4a5a92; --back2:#3f4e82; --face:#2b3144; --hl:#f0b429;
+  --p1:#6f92ff; --p2:#ff7096; --p1-soft:rgba(111,146,255,.22); --p2-soft:rgba(255,112,150,.22); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --card:#1c2130; --back1:#4a5a92; --back2:#3f4e82; --face:#2b3144; --hl:#f0b429;
+  --p1:#6f92ff; --p2:#ff7096; --p1-soft:rgba(111,146,255,.22); --p2-soft:rgba(255,112,150,.22); color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0 auto;max-width:480px;box-sizing:border-box;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;
+  display:flex;flex-direction:column;gap:12px;-webkit-tap-highlight-color:transparent;user-select:none}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pl{background:var(--card);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:800;border:2px solid transparent;transition:border-color .2s}
+.pl .pt{font-size:28px;font-variant-numeric:tabular-nums}
+#s1 .pt{color:var(--p1)} #s2 .pt{color:var(--p2)}
+#s1.on{border-color:var(--p1)} #s2.on{border-color:var(--p2)}
+.pl small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--card);border-radius:999px;padding:4px}
+.sizes button{font-family:var(--font);font-weight:800;font-size:13px;border:0;border-radius:999px;padding:8px 4px;background:transparent;color:var(--muted);cursor:pointer}
+.sizes button.sel{background:var(--fg);color:var(--bg)}
+.msg{text-align:center;font-size:14px;color:var(--muted);min-height:20px;margin:0}
+.msg b{color:var(--fg)}
+.grid{display:grid;gap:8px;width:100%}
+.c{aspect-ratio:3/4;border:0;padding:0;border-radius:10px;cursor:pointer;perspective:600px;background:transparent;min-width:0}
+.c .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
+.c.up .in{transform:rotateY(180deg)}
+.c .f,.c .b{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center}
+.c .b{background:repeating-linear-gradient(45deg,var(--back1) 0 7px,var(--back2) 7px 14px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.c .f{background:var(--face);transform:rotateY(180deg);font-size:min(9vw,40px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.c.g1 .f{background:var(--p1-soft);outline:2px solid var(--p1);outline-offset:-2px}
+.c.g2 .f{background:var(--p2-soft);outline:2px solid var(--p2);outline-offset:-2px}
+.c.done{cursor:default}
+.c:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+.ctl{display:flex;gap:8px;justify-content:center}
+.ctl button{font-family:var(--font);font-size:14px;font-weight:800;border:0;border-radius:999px;padding:10px 18px;background:var(--card);color:var(--fg);cursor:pointer}
+.rule{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin:0}
+@media (prefers-reduced-motion:reduce){.c .in{transition:none}}
+</style>
+
+<div class="scores">
+  <div class="pl" id="s1"><span>あお<small>ペア</small></span><span class="pt" id="p1">0</span></div>
+  <div class="pl" id="s2"><span>ピンク<small>ペア</small></span><span class="pt" id="p2">0</span></div>
+</div>
+<div class="sizes"><button data-n="8">16枚</button><button data-n="10">20枚</button><button data-n="15">30枚</button></div>
+<p class="msg" id="msg"></p>
+<div class="grid" id="grid"></div>
+<div class="ctl"><button id="new">もう一回</button></div>
+<p class="rule">2枚めくって同じ絵ならゲットして、もう一度めくれる。<br>違ったら裏に戻して交代。全部なくなったときペアが多いほうの勝ち。</p>
+
+<script>
+const ICONS=['🍎','🍋','🍇','🍑','🍉','🥝','🍒','🍍','🍓','🫐','🥕','🍄','🌽','🍩','🍙','🐙','🐸','🦊'];
+let pairs=10,cards,open,turn,score,lock,left;
+const grid=document.getElementById('grid');
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function reset(){
+  const pick=shuffle(ICONS.slice()).slice(0,pairs);
+  cards=shuffle([...pick,...pick]).map(s=>({s,up:false,owner:0}));
+  open=[];turn=Math.random()<.5?1:2;score=[0,0,0];lock=false;left=pairs;
+  grid.style.gridTemplateColumns=`repeat(${pairs===15?5:4},1fr)`;
+  document.querySelectorAll('[data-n]').forEach(b=>b.classList.toggle('sel',+b.dataset.n===pairs));
+  build();status();
+}
+function build(){
+  grid.innerHTML='';
+  cards.forEach((c,i)=>{
+    const e=document.createElement('button');e.className='c';e.setAttribute('aria-label','カード');
+    e.innerHTML=`<div class="in"><div class="b"></div><div class="f">${c.s}</div></div>`;
+    e.onclick=()=>flip(i);c.el=e;grid.appendChild(e);
+  });
+}
+function paint(c){c.el.classList.toggle('up',c.up);c.el.classList.toggle('g1',c.owner===1);c.el.classList.toggle('g2',c.owner===2);c.el.classList.toggle('done',!!c.owner);}
+function flip(i){
+  const c=cards[i];if(lock||c.up||c.owner)return;
+  c.up=true;paint(c);open.push(c);
+  if(open.length<2)return status();
+  const [a,b]=open;
+  if(a.s===b.s){
+    a.owner=b.owner=turn;score[turn]++;left--;paint(a);paint(b);open=[];status('そろった！もう一度');
+  }else{
+    lock=true;status('ざんねん');
+    setTimeout(()=>{a.up=b.up=false;paint(a);paint(b);open=[];turn=3-turn;lock=false;status();},1100);
+  }
+}
+const nm=p=>p===1?'あお':'ピンク';
+function status(extra){
+  document.getElementById('p1').textContent=score[1];document.getElementById('p2').textContent=score[2];
+  const done=left===0;
+  document.getElementById('s1').classList.toggle('on',!done&&turn===1);
+  document.getElementById('s2').classList.toggle('on',!done&&turn===2);
+  document.getElementById('msg').innerHTML=done?(score[1]===score[2]?'<b>引き分け！</b>':`<b>${nm(score[1]>score[2]?1:2)}の勝ち！</b>`)
+    :`<b>${nm(turn)}</b>の番${extra?' — '+extra:''}`;
+}
+document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{pairs=+b.dataset.n;reset();});
+document.getElementById('new').onclick=reset;
+reset();
+</script>
+
+</html>

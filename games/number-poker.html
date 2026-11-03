@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>数字ポーカー</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+/* Layout: one-screen pass-and-play. Score strip, round history, then the current step (hidden pick / reveal). Single deliberate dark table look. */
+:root{
+  color-scheme:dark;
+  --bg:#15201d; --felt:#1e2d29; --fg:#ecf1ee; --muted:#93a59f; --line:#2f433d;
+  --card:#f6f3ea; --ink:#22243a; --gold:#e8b64c; --p1:#79a2ff; --p2:#ff86a8;
+  --disp:"Dela Gothic One","Hiragino Sans",system-ui,sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans",system-ui,sans-serif;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;margin:0 auto;max-width:520px;box-sizing:border-box;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;
+  display:flex;flex-direction:column;gap:12px;-webkit-tap-highlight-color:transparent;user-select:none}
+.scores{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.pl{background:var(--felt);border-radius:14px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:700}
+.pl .pt{font-family:var(--disp);font-size:28px;font-variant-numeric:tabular-nums}
+#s0 .pt{color:var(--p1)} #s1 .pt{color:var(--p2)}
+.rd{text-align:center;color:var(--muted);font-size:12px;line-height:1.3}
+.rd b{display:block;font-family:var(--disp);font-weight:400;font-size:18px;color:var(--fg)}
+.hist{background:var(--felt);border-radius:14px;padding:8px 10px;overflow-x:auto}
+.hist table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13px}
+.hist td,.hist th{text-align:center;padding:3px 2px;min-width:22px}
+.hist th{color:var(--muted);font-weight:500;font-size:11px}
+.hist td.w0{color:var(--p1);font-weight:700} .hist td.w1{color:var(--p2);font-weight:700}
+.hist .nm{text-align:left;color:var(--muted);font-size:11px;white-space:nowrap;padding-right:6px}
+.main{flex:1;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;text-align:center;min-height:0}
+.title{font-family:var(--disp);font-weight:400;font-size:22px;margin:0}
+.c0{color:var(--p1)} .c1{color:var(--p2)}
+.note{color:var(--muted);margin:0;line-height:1.7}
+.note b{color:var(--fg)}
+.hand{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:380px}
+.card{aspect-ratio:5/7;border:3px solid transparent;border-radius:10px;background:var(--card);color:var(--ink);font-family:var(--disp);font-size:26px;cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.35);transition:transform .15s,border-color .15s;padding:0}
+.card.sel{border-color:var(--gold);transform:translateY(-6px)}
+.card.used{opacity:.18;cursor:not-allowed;box-shadow:none}
+.card:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.duel{display:flex;gap:18px;align-items:center;justify-content:center}
+.big{width:96px;aspect-ratio:5/7;border-radius:12px;background:var(--card);color:var(--ink);font-family:var(--disp);font-size:52px;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.4);border:4px solid transparent}
+.big.win{border-color:var(--gold)}
+.duel .lb{font-weight:700;margin-bottom:6px}
+.vs{font-family:var(--disp);color:var(--muted)}
+.btn{font-family:var(--body);font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px 28px;background:var(--gold);color:#241c08;cursor:pointer}
+.btn:disabled{opacity:.35}
+.btn.ghost{background:var(--line);color:var(--fg)}
+.box{background:var(--felt);border-radius:14px;padding:12px 16px;width:100%;box-sizing:border-box;line-height:1.7;text-align:left;color:var(--muted);font-size:13px}
+.box b{color:var(--fg)}
+.box ul{margin:4px 0 0;padding-left:1.2em}
+.names{display:grid;gap:10px;width:100%;max-width:300px}
+.names input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--felt);color:var(--fg)}
+h1{font-family:var(--disp);font-weight:400;font-size:38px;margin:0;color:var(--gold)}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+<div id="app"></div>
+<script>
+const RULE=`<b>ルール</b><ul>
+<li>2人とも1〜10のカードを1枚ずつ持っている。</li>
+<li>毎ラウンド、相手に見せずに1枚選び、同時に公開する。</li>
+<li><b>大きいほうが勝ち</b>。ただし<b>差が6以上なら小さいほうの勝ち</b>（例：3は9と10に勝つ）。</li>
+<li>同じ数字なら引き分けで、その1点は次のラウンドに持ち越し。</li>
+<li>使ったカードはもう使えない。10ラウンドで点が多いほうの勝ち。</li></ul>`;
+const app=document.getElementById('app');
+let names=["あお","ピンク"],S=null;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nm=p=>`<span class="c${p}">${esc(names[p])}</span>`;
+function start(){S={used:[[],[]],score:[0,0],pot:1,round:1,first:Math.random()<.5?0:1,step:'pass0',pick:[null,null],sel:null,hist:[]};render();}
+function who(){return S.step.endsWith('0')?S.first:1-S.first;}
+function judge(a,b){if(a===b)return -1;const d=Math.abs(a-b);const big=a>b?0:1;return d>=6?1-big:big;}
+function reveal(){
+  const [a,b]=S.pick,w=judge(a,b);
+  if(w<0){S.pot++;}else{S.score[w]+=S.pot;S.pot=1;}
+  S.used[0].push(a);S.used[1].push(b);S.hist.push({a,b,w});S.last={a,b,w};S.step='reveal';render();
+}
+function next(){
+  if(S.round===10){S.step='end';return render();}
+  S.round++;S.pick=[null,null];S.first=1-S.first;S.step='pass0';render();
+}
+function header(){
+  const rows=[0,1].map(p=>`<tr><td class="nm">${esc(names[p])}</td>${Array.from({length:10},(_,i)=>{const h=S.hist[i];if(!h)return'<td>·</td>';const v=p?h.b:h.a;return`<td class="${h.w===p?'w'+p:''}">${v}</td>`}).join('')}</tr>`).join('');
+  return `<div class="scores"><div class="pl" id="s0">${esc(names[0])}<span class="pt">${S.score[0]}</span></div>
+   <div class="rd">ラウンド<b>${Math.min(S.round,10)}/10</b>${S.pot>1?`次は${S.pot}点`:''}</div>
+   <div class="pl" id="s1">${esc(names[1])}<span class="pt">${S.score[1]}</span></div></div>
+   <div class="hist"><table><tr><th></th>${Array.from({length:10},(_,i)=>`<th>${i+1}</th>`).join('')}</tr>${rows}</table></div>`;
+}
+function render(){
+  if(!S){
+    app.innerHTML=`<div class="main" style="gap:16px;min-height:90vh"><h1>数字ポーカー</h1>
+     <div class="names"><input id="n0" value="${esc(names[0])}" aria-label="プレイヤー1の名前"><input id="n1" value="${esc(names[1])}" aria-label="プレイヤー2の名前"></div>
+     <button class="btn" id="go">はじめる</button><div class="box">${RULE}</div></div>`;
+    document.getElementById('go').onclick=()=>{names=[n0.value.trim()||'あお',n1.value.trim()||'ピンク'];start();};return;
+  }
+  let m='';const p=who(),o=1-p;
+  if(S.step==='pass0'||S.step==='pass1'){
+    m=`<p class="title">${nm(p)}が選ぶ番</p><p class="note">${nm(o)}は画面を見ないでね。</p><button class="btn" id="b">カードを選ぶ</button>`;
+  }else if(S.step==='pick0'||S.step==='pick1'){
+    m=`<p class="title">${nm(p)}：出すカードを選ぶ</p>
+     <div class="hand">${Array.from({length:10},(_,i)=>{const n=i+1,u=S.used[p].includes(n);return`<button class="card${u?' used':''}${S.sel===n?' sel':''}" data-n="${n}" ${u?'disabled':''}>${n}</button>`}).join('')}</div>
+     <p class="note">${nm(o)}の残り：<b>${Array.from({length:10},(_,i)=>i+1).filter(n=>!S.used[o].includes(n)).join(' ')}</b></p>
+     <button class="btn" id="b" ${S.sel==null?'disabled':''}>${S.step==='pick0'?'決定して画面を伏せる':'決定して公開へ'}</button>`;
+  }else if(S.step==='reveal'){
+    const {a,b,w}=S.last;
+    const why=w<0?'同じ数字で引き分け。点は次に持ち越し。':(Math.abs(a-b)>=6?`差が${Math.abs(a-b)}あるので、小さいほうの逆転勝ち！`:'大きいほうの勝ち。');
+    m=`<div class="duel"><div><div class="lb c0">${esc(names[0])}</div><div class="big${w===0?' win':''}">${a}</div></div><span class="vs">VS</span>
+     <div><div class="lb c1">${esc(names[1])}</div><div class="big${w===1?' win':''}">${b}</div></div></div>
+     <p class="title">${w<0?'引き分け':`${nm(w)}の勝ち`}</p><p class="note">${why}</p>
+     <button class="btn" id="b">${S.round===10?'結果を見る':'次のラウンド'}</button>`;
+  }else if(S.step==='end'){
+    const [x,y]=S.score;
+    m=`<p class="title">${x===y?'引き分け！':`${nm(x>y?0:1)}の勝ち！`}</p><p class="note">${x} 対 ${y}</p>
+     <button class="btn" id="b">もう一回</button><button class="btn ghost" id="t">名前を変える</button>`;
+  }
+  app.innerHTML=header()+`<div class="main">${m}</div><details class="box"><summary>ルールを見る</summary>${RULE}</details>`;
+  const b=document.getElementById('b');
+  if(S.step.startsWith('pass'))b.onclick=()=>{S.step='pick'+S.step.slice(-1);S.sel=null;render();};
+  else if(S.step.startsWith('pick')){
+    app.querySelectorAll('.card:not(.used)').forEach(e=>e.onclick=()=>{S.sel=+e.dataset.n;render();});
+    b.onclick=()=>{S.pick[p]=S.sel;S.sel=null;if(S.step==='pick0'){S.step='pass1';render();}else reveal();};
+  }
+  else if(S.step==='reveal')b.onclick=next;
+  else if(S.step==='end'){b.onclick=start;document.getElementById('t').onclick=()=>{S=null;render();};}
+}
+render();
+</script>
+
+</html>
