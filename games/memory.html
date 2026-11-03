@@ -7,23 +7,12 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
 <style>
 /* Layout: one-screen pass-and-play. Score strip, size switch, card grid, rules line. */
-:root{
-  --bg:#eef1f6; --fg:#1d2433; --muted:#6b7488; --card:#ffffff; --back1:#3b4a7a; --back2:#34426d; --face:#fbf8f1; --hl:#f0b429;
-  --p1:#2f5bd3; --p2:#d9466f; --p1-soft:rgba(47,91,211,.16); --p2-soft:rgba(217,70,111,.16);
-  --font:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --card:#1c2130; --back1:#4a5a92; --back2:#3f4e82; --face:#2b3144; --hl:#f0b429;
-  --p1:#6f92ff; --p2:#ff7096; --p1-soft:rgba(111,146,255,.22); --p2-soft:rgba(255,112,150,.22); color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --card:#1c2130; --back1:#4a5a92; --back2:#3f4e82; --face:#2b3144; --hl:#f0b429;
-  --p1:#6f92ff; --p2:#ff7096; --p1-soft:rgba(111,146,255,.22); --p2-soft:rgba(255,112,150,.22); color-scheme:dark}
-html,body{height:100%}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0 auto;max-width:480px;box-sizing:border-box;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;
-  display:flex;flex-direction:column;gap:12px;-webkit-tap-highlight-color:transparent;user-select:none}
+:root{--back1:#3b4a7a; --back2:#34426d; --face:#fbf8f1}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--back1:#4a5a92; --back2:#3f4e82; --face:#2b3144}}
+:root[data-theme="dark"]{--back1:#4a5a92; --back2:#3f4e82; --face:#2b3144}
 .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pl{background:var(--card);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:800;border:2px solid transparent;transition:border-color .2s}
 .pl .pt{font-size:28px;font-variant-numeric:tabular-nums}
@@ -51,6 +40,9 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0 auto;
 .rule{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin:0}
 @media (prefers-reduced-motion:reduce){.c .in{transition:none}}
 </style>
+</head>
+<body class="game">
+<a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 
 <div class="scores">
   <div class="pl" id="s1"><span>あお<small>ペア</small></span><span class="pt" id="p1">0</span></div>
@@ -110,4 +102,5 @@ document.getElementById('new').onclick=reset;
 reset();
 </script>
 
+</body>
 </html>

@@ -3,27 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>クィクソ ふたり対戦</title>
+<title>押し込みならべ</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
 <style>
 /* Layout: one-screen board. Turn strip, mode switch, (N+2)x(N+2) grid (board + outer ring of push arrows), controls, rules. */
-:root{
-  --bg:#eef1f6; --fg:#1d2433; --muted:#6b7488; --wood:#e4d6bd; --tile:#f7f1e6; --tile-edge:#cbb894; --hl:#f0b429; --arr-soft:#f5d98f;
-  --p1:#2f5bd3; --p2:#d9466f; --card:#ffffff;
-  --font:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --wood:#2a2f40; --tile:#3a4054; --tile-edge:#525a72; --hl:#f0b429; --arr-soft:#6b5a2c;
-  --p1:#6f92ff; --p2:#ff7096; --card:#1c2130; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --wood:#2a2f40; --tile:#3a4054; --tile-edge:#525a72; --hl:#f0b429; --arr-soft:#6b5a2c;
-  --p1:#6f92ff; --p2:#ff7096; --card:#1c2130; color-scheme:dark}
-html,body{height:100%}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0 auto;max-width:480px;box-sizing:border-box;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;
-  display:flex;flex-direction:column;gap:12px;-webkit-tap-highlight-color:transparent;user-select:none}
+:root{--wood:#e4d6bd; --tile:#f7f1e6; --tile-edge:#cbb894; --arr-soft:#f5d98f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--wood:#2a2f40; --tile:#3a4054; --tile-edge:#525a72; --arr-soft:#6b5a2c}}
+:root[data-theme="dark"]{--wood:#2a2f40; --tile:#3a4054; --tile-edge:#525a72; --arr-soft:#6b5a2c}
 .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pl{background:var(--card);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-weight:800;border:2px solid transparent;transition:border-color .2s}
 .pl .mk{width:22px;height:22px;border-radius:50%}
@@ -60,12 +49,15 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0 auto;
 .rules ol{margin:6px 0 0;padding-left:1.3em}
 @media (prefers-reduced-motion:reduce){.cell.new .b{animation:none}}
 </style>
+</head>
+<body class="game">
+<a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 
 <div class="scores">
   <div class="pl" id="s1"><span class="mk"></span>あお<span class="w" id="w1">0勝</span></div>
   <div class="pl" id="s2"><span class="mk"></span>ピンク<span class="w" id="w2">0勝</span></div>
 </div>
-<div class="modes"><button data-m="push7">押し込み 6×6</button><button data-m="quixo">クィクソ 5×5</button></div>
+<div class="modes"><button data-m="push7">押し込み 6×6</button><button data-m="shift">ずらし 5×5</button></div>
 <p class="msg" id="msg"></p>
 <div class="board"><div class="grid" id="grid"></div></div>
 <div class="ctl"><button id="undo">1手戻す</button><button id="cancel">選び直す</button><button id="new">新しいゲーム</button></div>
@@ -78,7 +70,7 @@ const RULES={
 <li>入れた場所に玉があれば、その列の玉が<b>1マスずつ奥へ押される</b>（空きマスまでの玉が動く）。</li>
 <li>列が端まで玉で埋まっていると、そこからは入れられない。</li>
 <li>縦・横・斜めのどれかで<b>自分の色が5つ並んだら勝ち</b>。押した結果、相手の5つ並びができたら<b>相手の勝ち</b>。</li></ol>`,
- quixo:`<b>クィクソ 5×5 のルール</b><ol>
+ shift:`<b>ずらし 5×5 のルール</b><ol>
 <li>外周のマスから1つ選ぶ。選べるのは<b>空きか自分の色</b>だけ。</li>
 <li>黄色い矢印を押すと、その列の端から押し込まれて列が1つずつずれる。取ったマスには自分の色が入る。</li>
 <li>縦・横・斜めのどれかで<b>自分の色が5つ並んだら勝ち</b>。</li>
@@ -102,7 +94,7 @@ function lineFrom(side,k){
     if(side==='T')a.push([i,k]);if(side==='B')a.push([N-1-i,k]);}
   return a;
 }
-function quixoOptions(r,c){const o=[];
+function shiftOptions(r,c){const o=[];
   if(c!==0)o.push({side:'L',r,c:-1,k:r});if(c!==N-1)o.push({side:'R',r,c:N,k:r});
   if(r!==0)o.push({side:'T',r:-1,c,k:c});if(r!==N-1)o.push({side:'B',r:N,c,k:c});return o;}
 function pushOptions(){const o=[];
@@ -117,7 +109,7 @@ function doPush7(side,k){
   for(let i=j;i>0;i--){const [a,b]=L[i],[p,q]=L[i-1];B[a][b]=B[p][q];}
   B[L[0][0]][L[0][1]]=turn;lastIn=L[0];after();
 }
-function doQuixo(side){
+function doShift(side){
   const [r,c]=sel;save();
   const k=(side==='L'||side==='R')?r:c;const L=lineFrom(side,k);
   const pos=L.findIndex(([a,b])=>a===r&&b===c);
@@ -141,18 +133,18 @@ function five(p){
 const arrow={L:'→',R:'←',T:'↓',B:'↑'};
 function draw(){
   g.innerHTML='';
-  const opts=over?[]:(mode==='push7'?pushOptions():(sel?quixoOptions(...sel):[]));
+  const opts=over?[]:(mode==='push7'?pushOptions():(sel?shiftOptions(...sel):[]));
   for(let R=-1;R<=N;R++)for(let C=-1;C<=N;C++){
     const inB=R>=0&&R<N&&C>=0&&C<N;
     if(!inB){
       const o=opts.find(o=>o.r===R&&o.c===C);
       const e=document.createElement(o?'button':'span');
       if(o){e.className='arr'+(mode==='push7'?' soft':'');e.textContent=arrow[o.side];e.setAttribute('aria-label','ここから押し込む');
-        e.onclick=()=>mode==='push7'?doPush7(o.side,o.k):doQuixo(o.side);}
+        e.onclick=()=>mode==='push7'?doPush7(o.side,o.k):doShift(o.side);}
       else e.className='gap';
       g.appendChild(e);continue;
     }
-    const v=B[R][C],can=mode==='quixo'&&!over&&edge(R,C)&&(v===0||v===turn);
+    const v=B[R][C],can=mode==='shift'&&!over&&edge(R,C)&&(v===0||v===turn);
     const e=document.createElement('button');
     e.className='cell'+(can?' pick':'')+(sel&&sel[0]===R&&sel[1]===C?' sel':'')+(winCells.some(([a,b])=>a===R&&b===C)?' win':'')+(lastIn&&lastIn[0]===R&&lastIn[1]===C?' new':'');
     if(v)e.innerHTML=`<span class="b ${v===1?'x':'o'}"></span>`;
@@ -177,4 +169,5 @@ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m
 reset();
 </script>
 
+</body>
 </html>

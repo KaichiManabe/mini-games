@@ -7,28 +7,13 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
 <style>
 /* Layout: one-screen pass-and-play board; score strip on top, board centered, controls below */
-:root{
-  --bg:#eef1f6; --fg:#1d2433; --muted:#6b7488; --dot:#1d2433; --line-empty:#cfd5e1;
-  --p1:#2f5bd3; --p1-soft:rgba(47,91,211,.18);
-  --p2:#d9466f; --p2-soft:rgba(217,70,111,.18);
-  --card:#ffffff;
-  --font:"M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Hiragino Sans", system-ui, sans-serif;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --dot:#e8ecf4; --line-empty:#2c3346;
-  --p1:#6f92ff; --p1-soft:rgba(111,146,255,.22); --p2:#ff7096; --p2-soft:rgba(255,112,150,.22);
-  --card:#1c2130; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --dot:#e8ecf4; --line-empty:#2c3346;
-  --p1:#6f92ff; --p1-soft:rgba(111,146,255,.22); --p2:#ff7096; --p2-soft:rgba(255,112,150,.22);
-  --card:#1c2130; color-scheme:dark}
-html,body{height:100%}
-body{background:var(--bg);color:var(--fg);font-family:var(--font);
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:12px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;
-  max-width:520px;margin:0 auto;-webkit-tap-highlight-color:transparent;user-select:none}
+:root{--dot:#1d2433; --line-empty:#cfd5e1}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--dot:#e8ecf4; --line-empty:#2c3346}}
+:root[data-theme="dark"]{--dot:#e8ecf4; --line-empty:#2c3346}
+body.game{max-width:520px;gap:14px}
 .scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pl{background:var(--card);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
   border:2px solid transparent;transition:border-color .2s,transform .2s}
@@ -60,6 +45,9 @@ button.sel{background:var(--fg);color:var(--bg)}
 button:disabled{opacity:.4}
 .rule{font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
 </style>
+</head>
+<body class="game">
+<a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 
 <div class="scores">
   <div class="pl" id="s1"><span class="name"><span class="sw"></span>あお</span><span class="pt" id="p1">0</span></div>
@@ -139,4 +127,5 @@ document.getElementById('undo').addEventListener('click',undo);
 reset(4);
 </script>
 
+</body>
 </html>
