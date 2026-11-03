@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>コネクト4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+[hidden]{display:none!important}
+/* Layout: one-screen board. Turn strip, 7x6 frame, controls, rule line. */
+:root{--frame:#2d3a66; --hole:#eef1f6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--frame:#33427a; --hole:#141824}}
+:root[data-theme="dark"]{--frame:#33427a; --hole:#141824}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pl{background:var(--card);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-weight:800;border:2px solid transparent;transition:border-color .2s}
+.pl .mk{width:22px;height:22px;border-radius:50%}
+#s1 .mk{background:var(--p1)} #s2 .mk{background:var(--p2)}
+#s1.on{border-color:var(--p1)} #s2.on{border-color:var(--p2)}
+.pl .w{margin-left:auto;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.msg{text-align:center;font-size:14px;color:var(--muted);min-height:20px;margin:0}
+.msg b{color:var(--fg)}
+.frame{background:var(--frame);border-radius:16px;padding:8px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.col{display:grid;grid-template-rows:repeat(6,1fr);gap:6px;border:0;padding:4px 0;border-radius:10px;background:transparent;cursor:pointer}
+.col:hover,.col:focus-visible{background:rgba(255,255,255,.08);outline:none}
+.col:disabled{cursor:default;background:transparent}
+.h{aspect-ratio:1;border-radius:50%;background:var(--hole);position:relative;overflow:hidden}
+.h i{position:absolute;inset:0;border-radius:50%}
+.h i.a{background:var(--p1)} .h i.b{background:var(--p2)}
+.h i.drop{animation:drop var(--d) cubic-bezier(.4,0,1,1)}
+.h.win{box-shadow:0 0 0 3px var(--hl)}
+@keyframes drop{from{transform:translateY(var(--from))}to{transform:translateY(0)}}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ctl button{font-family:var(--font);font-size:14px;font-weight:800;border:0;border-radius:999px;padding:10px 18px;background:var(--card);color:var(--fg);cursor:pointer}
+.ctl button:disabled{opacity:.4}
+.ctl button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.rule{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;margin:0}
+@media (prefers-reduced-motion:reduce){.h i.drop{animation:none}}
+/* PC：盤面を画面の高さに合わせて大きく */
+@media (min-width:880px) and (min-aspect-ratio:1/1){
+  .frame.stage{max-width:min(720px,calc((100dvh - 110px) * 7 / 6))}
+  .rule{text-align:left}}
+</style>
+</head>
+<body class="game split">
+<a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
+<div class="top">
+<div class="scores">
+  <div class="pl" id="s1"><span class="mk"></span>あお<span class="w" id="w1">0勝</span></div>
+  <div class="pl" id="s2"><span class="mk"></span>ピンク<span class="w" id="w2">0勝</span></div>
+</div>
+<p class="msg" id="msg"></p>
+</div>
+<div class="frame stage" id="frame"></div>
+<div class="bottom">
+<div class="ctl"><button id="undo">1手戻す</button><button id="new">新しいゲーム</button></div>
+<p class="rule">列をタップすると、いちばん下の空いたところに玉が落ちる。<br>縦・横・斜めのどれかで4つ並べたら勝ち。</p>
+</div>
+<script>
+const R=6,C=7;let B,turn,hist,over,wins=[0,0,0],last=null,winCells=[];
+const frame=document.getElementById('frame');
+function reset(){B=Array.from({length:R},()=>Array(C).fill(0));turn=Math.random()<.5?1:2;hist=[];over=false;last=null;winCells=[];draw();}
+function drop(c){
+  if(over)return;let r=R-1;while(r>=0&&B[r][c])r--;if(r<0)return;
+  hist.push(c);B[r][c]=turn;last=[r,c];
+  const w=four(r,c);
+  if(w){over=turn;winCells=w;wins[turn]++;}
+  else if(B[0].every(v=>v))over=-1;
+  else turn=3-turn;
+  draw();
+}
+function four(r,c){
+  const p=B[r][c];
+  for(const [dr,dc] of [[0,1],[1,0],[1,1],[1,-1]]){
+    const cells=[[r,c]];
+    for(const s of [1,-1]){let a=r+dr*s,b=c+dc*s;while(a>=0&&a<R&&b>=0&&b<C&&B[a][b]===p){cells.push([a,b]);a+=dr*s;b+=dc*s;}}
+    if(cells.length>=4)return cells;
+  }return null;
+}
+function undo(){
+  if(!hist.length)return;
+  if(over>0)wins[over]--;
+  const c=hist.pop();let r=0;while(!B[r][c])r++;const p=B[r][c];B[r][c]=0;
+  turn=p;over=false;winCells=[];last=null;draw();
+}
+function draw(){
+  frame.innerHTML='';
+  for(let c=0;c<C;c++){
+    const col=document.createElement('button');col.className='col';col.setAttribute('aria-label',`${c+1}列目に落とす`);
+    col.disabled=!!over||!!B[0][c];col.onclick=()=>drop(c);
+    for(let r=0;r<R;r++){
+      const h=document.createElement('div');h.className='h'+(winCells.some(([a,b])=>a===r&&b===c)?' win':'');
+      if(B[r][c]){const i=document.createElement('i');i.className=B[r][c]===1?'a':'b';
+        if(last&&last[0]===r&&last[1]===c){i.classList.add('drop');i.style.setProperty('--from',`-${(r+1)*118}%`);i.style.setProperty('--d',`${.12+r*.05}s`);}
+        h.appendChild(i);}
+      col.appendChild(h);
+    }
+    frame.appendChild(col);
+  }
+  const nm=p=>p===1?'あお':'ピンク';
+  document.getElementById('s1').classList.toggle('on',!over&&turn===1);
+  document.getElementById('s2').classList.toggle('on',!over&&turn===2);
+  document.getElementById('w1').textContent=wins[1]+'勝';document.getElementById('w2').textContent=wins[2]+'勝';
+  document.getElementById('msg').innerHTML=over===-1?'<b>引き分け</b>（盤が埋まった）':over?`<b>${nm(over)}の勝ち！</b>`:`<b>${nm(turn)}</b>の番`;
+  document.getElementById('undo').disabled=!hist.length;
+}
+document.getElementById('undo').onclick=undo;
+document.getElementById('new').onclick=reset;
+reset();
+</script>
+</body>
+</html>
