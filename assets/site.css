@@ -1,0 +1,28 @@
+/* 共通テーマ：全ページで使う色・フォント・ゲーム画面の土台・「トップへ戻る」リンク */
+:root{
+  --bg:#eef1f6; --fg:#1d2433; --muted:#6b7488; --card:#ffffff; --hl:#f0b429;
+  --p1:#2f5bd3; --p2:#d9466f; --p1-soft:rgba(47,91,211,.18); --p2-soft:rgba(217,70,111,.18);
+  --font:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --card:#1c2130;
+  --p1:#6f92ff; --p2:#ff7096; --p1-soft:rgba(111,146,255,.22); --p2-soft:rgba(255,112,150,.22); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141824; --fg:#e8ecf4; --muted:#8e97ab; --card:#1c2130;
+  --p1:#6f92ff; --p2:#ff7096; --p1-soft:rgba(111,146,255,.22); --p2-soft:rgba(255,112,150,.22); color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--font)}
+
+/* ゲーム画面：1画面に収まる縦並び */
+html:has(body.game){height:100%}
+body.game{height:100%;margin:0 auto;max-width:480px;box-sizing:border-box;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px 12px;
+  display:flex;flex-direction:column;gap:12px;-webkit-tap-highlight-color:transparent;user-select:none}
+
+/* 左上の「トップへ戻る」 */
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin-left:-10px;padding:6px 12px 6px 10px;
+  border-radius:999px;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:800;text-decoration:none;
+  transition:color .15s,background-color .15s}
+.back svg{width:14px;height:14px}
+.back:hover{color:var(--fg);background:var(--card)}
+.back:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
