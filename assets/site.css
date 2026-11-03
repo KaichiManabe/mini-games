@@ -26,3 +26,15 @@ body.game{height:100%;margin:0 auto;max-width:480px;box-sizing:border-box;
 .back svg{width:14px;height:14px}
 .back:hover{color:var(--fg);background:var(--card)}
 .back:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+
+/* PC・横長画面：盤面（.stage）を左、点数や操作（.top / .bottom）を右に並べる。
+   スマホでは .top / .bottom は display:contents なので、今までどおりの縦1列。 */
+.top,.bottom{display:contents}
+@media (min-width:880px) and (min-aspect-ratio:1/1){
+  body.game.split{max-width:1180px;display:grid;grid-template-columns:minmax(0,1fr) 360px;
+    grid-template-rows:auto auto auto 1fr;column-gap:40px;row-gap:16px;padding-block:16px 24px}
+  body.game.split > .back{grid-column:1/-1}
+  body.game.split > .stage{grid-column:1;grid-row:2/5;align-self:center;justify-self:center;width:100%}
+  body.game.split > .top,body.game.split > .bottom{grid-column:2;display:flex;flex-direction:column;gap:14px}
+  body.game.split > .bottom{grid-row:3}
+}

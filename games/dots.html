@@ -44,17 +44,24 @@ button:focus-visible{outline:2px solid var(--p1);outline-offset:2px}
 button.sel{background:var(--fg);color:var(--bg)}
 button:disabled{opacity:.4}
 .rule{font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
+/* PC：盤面を画面の高さいっぱいまで大きく */
+@media (min-width:880px) and (min-aspect-ratio:1/1){body.game.split{max-width:1100px}
+  svg{max-width:min(720px,calc(100dvh - 90px))}
+  .rule{text-align:left;margin:0}}
 </style>
 </head>
-<body class="game">
+<body class="game split">
 <a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 
+<div class="top">
 <div class="scores">
   <div class="pl" id="s1"><span class="name"><span class="sw"></span>あお</span><span class="pt" id="p1">0</span></div>
   <div class="pl" id="s2"><span class="name"><span class="sw"></span>ピンク</span><span class="pt" id="p2">0</span></div>
 </div>
 <div class="msg" id="msg"></div>
-<div class="board"><svg id="svg"></svg></div>
+</div>
+<div class="board stage"><svg id="svg"></svg></div>
+<div class="bottom">
 <div class="ctl">
   <button id="undo">1手戻す</button>
   <button data-n="3">3×3</button>
@@ -63,6 +70,7 @@ button:disabled{opacity:.4}
   <button data-n="6">6×6</button>
 </div>
 <p class="rule">交互に線を1本引く。四角を閉じたらその陣地を獲得して、もう1本引ける。<br>線が全部埋まったとき、陣地が多いほうの勝ち。</p>
+</div>
 
 <script>
 const NS="http://www.w3.org/2000/svg";
