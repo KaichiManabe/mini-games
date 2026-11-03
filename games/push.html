@@ -48,20 +48,29 @@
 .rules b{color:var(--fg)}
 .rules ol{margin:6px 0 0;padding-left:1.3em}
 @media (prefers-reduced-motion:reduce){.cell.new .b{animation:none}}
+/* PC：盤面を画面の高さに合わせて大きく */
+@media (min-width:880px) and (min-aspect-ratio:1/1){
+  body.game.split > .board{width:min(100%,calc(100dvh - 90px),760px);box-sizing:border-box;padding:12px}
+  .grid{max-width:none;gap:6px}
+  .arr{font-size:20px}}
 </style>
 </head>
-<body class="game">
+<body class="game split">
 <a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 
+<div class="top">
 <div class="scores">
   <div class="pl" id="s1"><span class="mk"></span>あお<span class="w" id="w1">0勝</span></div>
   <div class="pl" id="s2"><span class="mk"></span>ピンク<span class="w" id="w2">0勝</span></div>
 </div>
 <div class="modes"><button data-m="push7">押し込み 6×6</button><button data-m="shift">ずらし 5×5</button></div>
 <p class="msg" id="msg"></p>
-<div class="board"><div class="grid" id="grid"></div></div>
+</div>
+<div class="board stage"><div class="grid" id="grid"></div></div>
+<div class="bottom">
 <div class="ctl"><button id="undo">1手戻す</button><button id="cancel">選び直す</button><button id="new">新しいゲーム</button></div>
 <div class="rules" id="rules"></div>
+</div>
 
 <script>
 const RULES={
