@@ -3,7 +3,103 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>コネクト4</title>
+<title>コネクト4（四目並べ）｜2人対戦・無料・スマホ1台 - ふたりあそび</title>
+<meta name="description" content="7列×6段の盤に玉を落として、縦・横・斜めに4つ並べたら勝ち。定番の四目並べ「コネクト4」をスマホ1台・ブラウザで2人対戦。インストール不要・無料で、すぐ遊べます。">
+<link rel="canonical" href="https://futari-asobi.pages.dev/games/connect4">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ふたりあそび">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="コネクト4（四目並べ）｜2人対戦・無料・スマホ1台 - ふたりあそび">
+<meta property="og:description" content="7列×6段の盤に玉を落として、縦・横・斜めに4つ並べたら勝ち。定番の四目並べ「コネクト4」をスマホ1台・ブラウザで2人対戦。インストール不要・無料で、すぐ遊べます。">
+<meta property="og:url" content="https://futari-asobi.pages.dev/games/connect4">
+<meta property="og:image" content="https://futari-asobi.pages.dev/assets/og/connect4.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="コネクト4 - ふたりあそび">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="コネクト4（四目並べ）｜2人対戦・無料・スマホ1台 - ふたりあそび">
+<meta name="twitter:description" content="7列×6段の盤に玉を落として、縦・横・斜めに4つ並べたら勝ち。定番の四目並べ「コネクト4」をスマホ1台・ブラウザで2人対戦。インストール不要・無料で、すぐ遊べます。">
+<meta name="twitter:image" content="https://futari-asobi.pages.dev/assets/og/connect4.png">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebApplication",
+   "@id": "https://futari-asobi.pages.dev/games/connect4#app",
+   "name": "コネクト4（四目並べ）",
+   "url": "https://futari-asobi.pages.dev/games/connect4",
+   "description": "7列×6段の盤に玉を落として、縦・横・斜めに4つ並べたら勝ち。定番の四目並べ「コネクト4」をスマホ1台・ブラウザで2人対戦。インストール不要・無料で、すぐ遊べます。",
+   "image": "https://futari-asobi.pages.dev/assets/og/connect4.png",
+   "inLanguage": "ja",
+   "applicationCategory": "GameApplication",
+   "applicationSubCategory": "2人対戦ゲーム",
+   "operatingSystem": "Any",
+   "browserRequirements": "JavaScriptが動くWebブラウザ",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+   },
+   "isPartOf": {
+    "@type": "WebSite",
+    "@id": "https://futari-asobi.pages.dev/#website",
+    "name": "ふたりあそび",
+    "url": "https://futari-asobi.pages.dev/"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "ふたりあそび",
+     "item": "https://futari-asobi.pages.dev/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "コネクト4",
+     "item": "https://futari-asobi.pages.dev/games/connect4"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://futari-asobi.pages.dev/games/connect4#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "先手と後手、どちらが有利ですか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "7列×6段の盤では、先手が最善の手を続ければ必ず勝てることがコンピューターで証明されています。ただ人間同士で読み切るのは難しいので、先手を交代しながら遊ぶのがおすすめです。このゲームでは先手が毎回ランダムに決まります。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "斜めに4つ並んでも勝ちですか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "はい。縦・横・斜めのどの向きでも、4つ並べば勝ちです。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "5つ以上並んだらどうなりますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "4つ以上並んでいれば勝ちです。5つ並んでも同じく勝ちになります。"
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
@@ -43,7 +139,8 @@
   .rule{text-align:left}}
 </style>
 </head>
-<body class="game split">
+<body>
+<main class="game split">
 <a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 <div class="top">
 <div class="scores">
@@ -57,6 +154,57 @@
 <div class="ctl"><button id="undo">1手戻す</button><button id="new">新しいゲーム</button></div>
 <p class="rule">列をタップすると、いちばん下の空いたところに玉が落ちる。<br>縦・横・斜めのどれかで4つ並べたら勝ち。</p>
 </div>
+</main>
+
+<article class="guide">
+<h1>コネクト4（四目並べ）の遊び方</h1>
+<p class="intro">「コネクト4」は、縦に立てた7列×6段の盤に玉を落とし、縦・横・斜めのどれかで自分の色を4つ並べたら勝ちの2人対戦ゲームです。「四目並べ」とも呼ばれます。玉は下に落ちるので、置けるのは各列のいちばん下の空きマスだけ。ルールはシンプルなのに、先読みが熱い定番ゲームです。</p>
+<section>
+<h2>ルール</h2>
+<ol>
+<li>盤は<b>横7列×縦6段</b>です。先手はランダムに決まります。</li>
+<li>自分の番に列を1つタップすると、その列の<b>いちばん下の空いたマス</b>に玉が落ちます。</li>
+<li>玉で埋まった列には入れられません。</li>
+<li>縦・横・斜めのどれかで<b>自分の色が4つ以上並んだら勝ち</b>です。</li>
+<li>盤がすべて埋まってもどちらも並ばなければ、引き分けです。</li>
+</ol>
+<p>「1手戻す」で何手でもさかのぼれます。勝った回数は画面上部に記録されます。</p>
+</section>
+<section>
+<h2>勝つためのコツ</h2>
+<ul>
+<li><b>真ん中の列を取る。</b>4列目は、横や斜めの並びにいちばん多く関われる列です。</li>
+<li><b>相手の3つ並びの「次のマス」に注意。</b>そのマスの下が埋まった瞬間に置かれてしまいます。自分からその下を埋めないようにしましょう。</li>
+<li><b>2か所を同時に狙う。</b>4つ並びまであと1つ、という場所を2つ作れば、相手は片方しか防げません。</li>
+<li><b>終盤は段の偶数・奇数を意識する。</b>一般に、先手は下から奇数段目、後手は偶数段目に「あと1つ」の場所を作ると、最後に置ける順番が回ってきやすくなります。</li>
+</ul>
+</section>
+<section>
+<h2>よくある質問</h2>
+<dl>
+<dt>先手と後手、どちらが有利ですか？</dt>
+<dd>7列×6段の盤では、先手が最善の手を続ければ必ず勝てることがコンピューターで証明されています。ただ人間同士で読み切るのは難しいので、先手を交代しながら遊ぶのがおすすめです。このゲームでは先手が毎回ランダムに決まります。</dd>
+<dt>斜めに4つ並んでも勝ちですか？</dt>
+<dd>はい。縦・横・斜めのどの向きでも、4つ並べば勝ちです。</dd>
+<dt>5つ以上並んだらどうなりますか？</dt>
+<dd>4つ以上並んでいれば勝ちです。5つ並んでも同じく勝ちになります。</dd>
+</dl>
+</section>
+<section class="more">
+<h2>ほかの2人用ゲーム</h2>
+<p>どれもスマホ1台・インストール不要で、すぐに2人で遊べます。</p>
+<ul>
+<li><a href="../index.html">ゲーム一覧（トップ）</a></li>
+<li><a href="dots.html">陣取りドット</a></li>
+<li><a href="memory.html">ふたりの神経衰弱</a></li>
+<li><a href="number-poker.html">数字ポーカー</a></li>
+<li><a href="push.html">押し込みならべ</a></li>
+<li><a href="gogo-shogi.html">5五将棋</a></li>
+<li><a href="nim.html">ニム</a></li>
+</ul>
+</section>
+</article>
+
 <script>
 const R=6,C=7;let B,turn,hist,over,wins=[0,0,0],last=null,winCells=[];
 const frame=document.getElementById('frame');

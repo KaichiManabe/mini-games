@@ -3,7 +3,103 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ニム</title>
+<title>ニム（石取りゲーム）｜2人対戦・無料・スマホ1台 - ふたりあそび</title>
+<meta name="description" content="山から好きな数だけ石を取り、最後の1個を取ったら負け。必勝法でも有名な石取りゲーム「ニム」をスマホ1台で2人対戦。1・3・5・7など3種類の配置。インストール不要・無料。">
+<link rel="canonical" href="https://futari-asobi.pages.dev/games/nim">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ふたりあそび">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="ニム（石取りゲーム）｜2人対戦・無料・スマホ1台 - ふたりあそび">
+<meta property="og:description" content="山から好きな数だけ石を取り、最後の1個を取ったら負け。必勝法でも有名な石取りゲーム「ニム」をスマホ1台で2人対戦。1・3・5・7など3種類の配置。インストール不要・無料。">
+<meta property="og:url" content="https://futari-asobi.pages.dev/games/nim">
+<meta property="og:image" content="https://futari-asobi.pages.dev/assets/og/nim.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ニム - ふたりあそび">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ニム（石取りゲーム）｜2人対戦・無料・スマホ1台 - ふたりあそび">
+<meta name="twitter:description" content="山から好きな数だけ石を取り、最後の1個を取ったら負け。必勝法でも有名な石取りゲーム「ニム」をスマホ1台で2人対戦。1・3・5・7など3種類の配置。インストール不要・無料。">
+<meta name="twitter:image" content="https://futari-asobi.pages.dev/assets/og/nim.png">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebApplication",
+   "@id": "https://futari-asobi.pages.dev/games/nim#app",
+   "name": "ニム（石取りゲーム）",
+   "url": "https://futari-asobi.pages.dev/games/nim",
+   "description": "山から好きな数だけ石を取り、最後の1個を取ったら負け。必勝法でも有名な石取りゲーム「ニム」をスマホ1台で2人対戦。1・3・5・7など3種類の配置。インストール不要・無料。",
+   "image": "https://futari-asobi.pages.dev/assets/og/nim.png",
+   "inLanguage": "ja",
+   "applicationCategory": "GameApplication",
+   "applicationSubCategory": "2人対戦ゲーム",
+   "operatingSystem": "Any",
+   "browserRequirements": "JavaScriptが動くWebブラウザ",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+   },
+   "isPartOf": {
+    "@type": "WebSite",
+    "@id": "https://futari-asobi.pages.dev/#website",
+    "name": "ふたりあそび",
+    "url": "https://futari-asobi.pages.dev/"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "ふたりあそび",
+     "item": "https://futari-asobi.pages.dev/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "ニム",
+     "item": "https://futari-asobi.pages.dev/games/nim"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://futari-asobi.pages.dev/games/nim#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "ニムに必勝法はありますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "あります。各山の石の数を2進数にして桁ごとに足し、どの桁も偶数（ニム和が0）になるように取り続けるのが基本です。最後の1個を取ったら負けのルールでは、終盤だけ1個の山を奇数個残すように調整します。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "「最後の1個を取ったら勝ち」のルールもありますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "あります。そちらがニムの通常ルールで、このゲームは「最後の1個を取ったら負け」のルール（ミゼール）です。必勝法は終盤以外ほぼ同じです。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "はじめはどの配置がおすすめですか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "石が12個ですぐ終わる「3・4・5」がおすすめです。「1・3・5・7」はニムの定番配置、「ランダム」は毎回ちがう配置で遊べます。"
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
@@ -46,7 +142,8 @@
   .rule{text-align:left}}
 </style>
 </head>
-<body class="game split">
+<body>
+<main class="game split">
 <a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
 <div class="top">
 <div class="scores">
@@ -61,6 +158,57 @@
 <div class="ctl"><button class="main" id="take" disabled>取る</button><button id="undo">1手戻す</button><button id="new">新しいゲーム</button></div>
 <p class="rule">自分の番に、どれか1つの山から好きな数だけ石を取る（1個以上）。<br><b>最後の1個を取ったほうが負け。</b> 石をタップすると、そこから右の石がまとめて選ばれる。</p>
 </div>
+</main>
+
+<article class="guide">
+<h1>ニム（石取りゲーム）の遊び方</h1>
+<p class="intro">「ニム」は、いくつかの山に分かれた石を交互に取っていく、昔からある2人対戦の石取りゲームです。このページでは「最後の1個を取ったほうが負け」のルールで遊びます。ルールは1行で説明できるのに、必勝法がある数学のゲームとしても有名です。</p>
+<section>
+<h2>ルール</h2>
+<ol>
+<li>石の山の配置を<b>「1・3・5・7」「3・4・5」「ランダム」</b>から選びます。ランダムは3〜4つの山に、それぞれ2〜7個の石が並びます。先手はランダムに決まります。</li>
+<li>自分の番に、<b>どれか1つの山</b>から<b>好きな数</b>の石を取ります。1個以上なら、山ごと全部取ってもかまいません。</li>
+<li>石をタップすると、その石から右の石がまとめて選ばれます。「〇個取る」を押すと確定です。</li>
+<li>2つ以上の山から同時に取ることや、パスはできません。</li>
+<li><b>最後の1個を取ったほうが負け</b>です。</li>
+</ol>
+<p>「1手戻す」で直前の手を取り消せます。勝った回数は画面上部に記録されます。</p>
+</section>
+<section>
+<h2>勝つためのコツ</h2>
+<ul>
+<li><b>ニム和（2進数の排他的論理和）を0にして渡す。</b>各山の石の数を2進数で書き、桁ごとに1の個数を数えます。どの桁も偶数になる形で相手に渡すと有利になります。</li>
+<li><b>終盤だけは例外。</b>「最後の1個を取ったら負け」なので、2個以上ある山が1つだけになったら、その山を0個か1個にして、<b>1個の山が奇数個</b>残るように渡しましょう。</li>
+<li><b>1個ずつの山だけになったら、数を数える。</b>相手の番で1個の山が奇数個なら、最後の1個は相手が取ることになります。</li>
+<li><b>配置ごとの有利・不利を知る。</b>「1・3・5・7」は、後手が正しく取り続ければ必ず勝てる配置です。「3・4・5」は先手必勝で、最初に3個の山から2個取るのが正解です。</li>
+</ul>
+</section>
+<section>
+<h2>よくある質問</h2>
+<dl>
+<dt>ニムに必勝法はありますか？</dt>
+<dd>あります。各山の石の数を2進数にして桁ごとに足し、どの桁も偶数（ニム和が0）になるように取り続けるのが基本です。最後の1個を取ったら負けのルールでは、終盤だけ1個の山を奇数個残すように調整します。</dd>
+<dt>「最後の1個を取ったら勝ち」のルールもありますか？</dt>
+<dd>あります。そちらがニムの通常ルールで、このゲームは「最後の1個を取ったら負け」のルール（ミゼール）です。必勝法は終盤以外ほぼ同じです。</dd>
+<dt>はじめはどの配置がおすすめですか？</dt>
+<dd>石が12個ですぐ終わる「3・4・5」がおすすめです。「1・3・5・7」はニムの定番配置、「ランダム」は毎回ちがう配置で遊べます。</dd>
+</dl>
+</section>
+<section class="more">
+<h2>ほかの2人用ゲーム</h2>
+<p>どれもスマホ1台・インストール不要で、すぐに2人で遊べます。</p>
+<ul>
+<li><a href="../index.html">ゲーム一覧（トップ）</a></li>
+<li><a href="dots.html">陣取りドット</a></li>
+<li><a href="memory.html">ふたりの神経衰弱</a></li>
+<li><a href="number-poker.html">数字ポーカー</a></li>
+<li><a href="push.html">押し込みならべ</a></li>
+<li><a href="connect4.html">コネクト4</a></li>
+<li><a href="gogo-shogi.html">5五将棋</a></li>
+</ul>
+</section>
+</article>
+
 <script>
 let mode='std',P,turn,sel,hist,over,wins=[0,0,0];
 function reset(){

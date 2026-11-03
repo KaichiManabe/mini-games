@@ -1,0 +1,5 @@
+# ふたりあそび：すべてのクローラーを許可します（GPTBot、ClaudeBot、PerplexityBot などのAIクローラーも含む）
+User-agent: *
+Allow: /
+
+Sitemap: https://futari-asobi.pages.dev/sitemap.xml

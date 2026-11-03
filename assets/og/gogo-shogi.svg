@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&amp;display=block");
+svg{--bg:#eef1f6;--fg:#1d2433;--muted:#6b7488;--card:#ffffff;--hl:#f0b429;--p1:#2f5bd3;--p2:#d9466f;
+--p1-soft:rgba(47,91,211,.18);--p2-soft:rgba(217,70,111,.18);--bg-soft:#e3e8f1;--ink:#1d2433;--line:#cfd5e1;
+--paper:#fbf8f1;--felt:#1e2d29;--gold:#e8b64c;--tile:#f7f1e6;--tile-edge:#cbb894}
+text{font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN',sans-serif}
+</style>
+<rect width="1200" height="630" fill="var(--bg)"/>
+<rect x="56" y="56" width="560" height="518" rx="36" fill="var(--bg-soft)"/>
+<svg x="86" y="141" width="500" height="350" viewBox="0 0 120 84">
+            <rect x="22" y="4" width="76" height="76" rx="3" fill="#e6c88f" stroke="#7a5a2a" stroke-width="2"/>
+            <g stroke="#7a5a2a" stroke-width="1"><path d="M37.2 4v76M52.4 4v76M67.6 4v76M82.8 4v76M22 19.2h76M22 34.4h76M22 49.6h76M22 64.8h76"/></g>
+            <g font-family="Hiragino Mincho ProN, Yu Mincho, serif" font-weight="800" font-size="11" text-anchor="middle" fill="#1d1a14">
+              <path d="M29.6 66.5l5 2 1.6 10h-13.2l1.6-10z" fill="#f4e2b8"/><text x="29.6" y="77">玉</text>
+              <path d="M29.6 51.3l5 2 1.6 10h-13.2l1.6-10z" fill="#f4e2b8"/><text x="29.6" y="61.8">歩</text>
+              <path d="M90.4 33l-5-2-1.6-10h13.2l-1.6 10z" fill="#f4e2b8"/><text x="90.4" y="23" transform="rotate(180 90.4 27)">歩</text>
+              <path d="M90.4 17.8l-5-2-1.6-10h13.2l-1.6 10z" fill="#f4e2b8"/><text x="90.4" y="7.8" transform="rotate(180 90.4 11.8)">王</text>
+            </g>
+          </svg>
+<circle cx="670" cy="132" r="14" fill="var(--p1)"/><circle cx="690.3" cy="132" r="14" fill="var(--p2)" fill-opacity=".9"/><text x="714.3" y="142.8" font-size="30" font-weight="800" fill="var(--fg)">ふたりあそび</text>
+<text x="668" y="300" font-size="84" font-weight="800" fill="var(--fg)">5五将棋</text>
+<text x="670" y="364" font-size="34" font-weight="800" fill="var(--muted)">5×5のミニ将棋</text>
+<g font-size="24" font-weight="800">
+  <rect x="668" y="420" width="156" height="48" rx="24" fill="var(--card)"/><text x="746" y="452" text-anchor="middle" fill="var(--fg)">2人対戦</text>
+  <rect x="836" y="420" width="104" height="48" rx="24" fill="var(--card)"/><text x="888" y="452" text-anchor="middle" fill="var(--fg)">無料</text>
+  <rect x="952" y="420" width="164" height="48" rx="24" fill="var(--card)"/><text x="1034" y="452" text-anchor="middle" fill="var(--fg)">スマホ1台</text>
+</g>
+<text x="670" y="548" font-size="22" fill="var(--muted)">futari-asobi.pages.dev</text>
+</svg>
