@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>5×5将棋</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&family=Shippori+Mincho+B1:wght@700;800&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+[hidden]{display:none!important}
+/* Layout: one-screen pass-and-play. Gote strip + hand (rotated) on top, 5x5 wooden board with file/rank labels, sente hand + strip below, controls. */
+:root{
+  --board:#e6c88f; --grid:#7a5a2a; --piece:#f4e2b8; --piece-edge:#b48a4a; --ink:#1d1a14; --promo:#b3261e;
+  --move:rgba(47,91,211,.28); --last:rgba(240,180,41,.45);
+  --koma:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --board:#b8955a; --grid:#4a3516; --piece:#f1ddb0; --piece-edge:#9c7638;
+  --move:rgba(60,100,230,.38); --last:rgba(240,180,41,.5)}}
+:root[data-theme="dark"]{
+  --board:#b8955a; --grid:#4a3516; --piece:#f1ddb0; --piece-edge:#9c7638;
+  --move:rgba(60,100,230,.38); --last:rgba(240,180,41,.5)}
+body.game{max-width:460px;gap:10px}
+.side{background:var(--card);border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;border:2px solid transparent;min-height:52px;box-sizing:border-box}
+.side.on.s0{border-color:var(--p1)} .side.on.s1{border-color:var(--p2)}
+.side .who{font-weight:800;font-size:13px;display:flex;align-items:center;gap:6px;flex:none;min-width:70px}
+.side .dot{width:10px;height:10px;border-radius:50%}
+.s0 .dot{background:var(--p1)} .s1 .dot{background:var(--p2)}
+.side.gote{transform:rotate(180deg)}
+.hand{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.hand .none{font-size:12px;color:var(--muted)}
+.hp{position:relative;border:0;padding:0;background:transparent;cursor:pointer;width:34px;height:38px}
+.hp .k{width:100%;height:100%}
+.hp .n{position:absolute;right:-4px;bottom:-4px;background:var(--fg);color:var(--bg);font-size:10px;font-weight:800;border-radius:999px;min-width:16px;height:16px;line-height:16px;text-align:center}
+.hp.sel .k{outline:3px solid var(--hl);outline-offset:1px}
+.hp:disabled{cursor:default}
+.check{margin-left:auto;font-weight:800;font-size:12px;color:var(--promo);background:rgba(179,38,30,.12);padding:3px 8px;border-radius:999px}
+.boardwrap{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:3px;width:100%;max-width:400px;margin:0 auto}
+.files{display:grid;grid-template-columns:repeat(5,1fr);font-size:11px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.ranks{display:grid;grid-template-rows:repeat(5,1fr);font-size:11px;color:var(--muted);align-items:center;padding-left:2px}
+.board{background:var(--board);border:2px solid var(--grid);border-radius:4px;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);aspect-ratio:1;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.sq{border:0;padding:0;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);background:transparent;position:relative;display:grid;place-items:center;cursor:pointer;min-width:0}
+.sq:nth-child(5n){border-right:0} .sq:nth-last-child(-n+5){border-bottom:0}
+.sq.last{background:var(--last)}
+.sq.mv::after{content:"";position:absolute;width:26%;height:26%;border-radius:50%;background:var(--move)}
+.sq.mv.cap::after{width:84%;height:84%;background:transparent;border:4px solid var(--move);box-sizing:border-box}
+.sq:focus-visible{outline:2px solid var(--fg);outline-offset:-2px}
+.k{width:80%;height:88%;background:linear-gradient(180deg,var(--piece),color-mix(in srgb,var(--piece) 85%,var(--piece-edge)));
+  clip-path:polygon(50% 0,86% 14%,100% 100%,0 100%,14% 14%);display:grid;place-items:center;padding-top:10%;box-sizing:border-box;
+  font-family:var(--koma);font-weight:800;color:var(--ink);font-size:clamp(16px,6.4vw,30px);line-height:1}
+.k.g{transform:rotate(180deg);padding-top:0;padding-bottom:10%}
+.k.pr{color:var(--promo)}
+.k.o0{box-shadow:inset 0 -4px 0 var(--p1)} .k.o1{box-shadow:inset 0 -4px 0 var(--p2)}
+.hp .k{font-size:17px}
+.sq.sel .k{outline:3px solid var(--hl);outline-offset:-2px}
+.msg{text-align:center;font-size:14px;color:var(--muted);min-height:20px;margin:0}
+.msg b{color:var(--fg)}
+.promo{display:flex;gap:10px;justify-content:center}
+.ctl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+button.b{font-family:var(--font);font-size:14px;font-weight:800;border:0;border-radius:999px;padding:10px 18px;background:var(--card);color:var(--fg);cursor:pointer}
+button.b.main{background:var(--hl);color:#2a1d00}
+button.b:disabled{opacity:.4}
+button.b:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+details{background:var(--card);border-radius:14px;padding:10px 14px;font-size:13px;line-height:1.7;color:var(--muted)}
+summary{cursor:pointer;font-weight:800;color:var(--fg)}
+details b{color:var(--fg)}
+details ul{margin:6px 0 0;padding-left:1.2em}
+/* PC：盤を画面の高さに合わせて大きく */
+@media (min-width:880px) and (min-aspect-ratio:1/1){
+  body.game{max-width:min(640px,calc(100dvh - 210px))}
+  .boardwrap{max-width:none} .k{font-size:clamp(20px,4.2vh,40px)} .hp{width:42px;height:46px} .hp .k{font-size:21px}}
+</style>
+</head>
+<body class="game">
+<a class="back" href="../index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>トップへ戻る</a>
+<div class="side gote s1" id="side1"></div>
+<div class="boardwrap stage">
+  <div class="files"><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><span></span>
+  <div class="board" id="board"></div>
+  <div class="ranks"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span></div>
+</div>
+<div class="side s0" id="side0"></div>
+<p class="msg" id="msg"></p>
+<div class="promo" id="promo" hidden><button class="b main" id="pYes">成る</button><button class="b" id="pNo">成らない</button></div>
+<div class="ctl"><button class="b" id="undo">1手戻す</button><button class="b" id="resign">投了</button><button class="b" id="new">新しい対局</button></div>
+<details><summary>ルール</summary><ul>
+<li>ふつうの将棋と同じ動き。盤が5×5で、駒は<b>玉・金・銀・角・飛・歩</b>を1枚ずつ。</li>
+<li>相手の玉を詰ませたら勝ち。取った駒は持ち駒として打てる。</li>
+<li>成れるのは<b>相手側のいちばん奥の段</b>に入るとき・そこから出るとき。歩は奥の段で必ず成る。</li>
+<li>二歩・行き所のない歩打ち・打ち歩詰めは禁止（打てないマスは選べない）。</li>
+<li>千日手の判定はなし。決着がつかないときは話し合って引き分けに。</li>
+<li>ピンク側の駒と持ち駒は逆さま表示。スマホを机に置いて向かい合うと遊びやすい。</li>
+</ul></details>
+<script>
+const N=5;
+const KANJI={K:['玉','王'],G:'金',S:'銀',B:'角',R:'飛',P:'歩','+S':'全','+B':'馬','+R':'龍','+P':'と'};
+const KING=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const GOLD=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,0]];
+const SILV=[[-1,-1],[-1,0],[-1,1],[1,-1],[1,1]];
+const DIAG=[[-1,-1],[-1,1],[1,-1],[1,1]], ORTH=[[-1,0],[1,0],[0,-1],[0,1]];
+const SPEC={K:[KING,[]],G:[GOLD,[]],'+S':[GOLD,[]],'+P':[GOLD,[]],S:[SILV,[]],P:[[[-1,0]],[]],B:[[],DIAG],R:[[],ORTH],'+B':[ORTH,DIAG],'+R':[DIAG,ORTH]};
+const inB=(r,c)=>r>=0&&r<N&&c>=0&&c<N;
+const zone=(o,r)=>o===0?r===0:r===N-1;
+
+function initial(){
+  const B=Array.from({length:N},()=>Array(N).fill(null));
+  ['K','G','S','B','R'].forEach((t,c)=>B[0][c]={t,o:1});B[1][0]={t:'P',o:1};
+  ['R','B','S','G','K'].forEach((t,c)=>B[4][c]={t,o:0});B[3][4]={t:'P',o:0};
+  return {B,H:[{R:0,B:0,G:0,S:0,P:0},{R:0,B:0,G:0,S:0,P:0}],turn:0};
+}
+function targets(B,r,c){
+  const p=B[r][c],f=p.o===0?1:-1,[st,sl]=SPEC[p.t],out=[];
+  for(const [dr,dc] of st){const a=r+dr*f,b=c+dc*f;if(inB(a,b)&&(!B[a][b]||B[a][b].o!==p.o))out.push([a,b]);}
+  for(const [dr,dc] of sl){let a=r+dr*f,b=c+dc*f;while(inB(a,b)){if(B[a][b]){if(B[a][b].o!==p.o)out.push([a,b]);break;}out.push([a,b]);a+=dr*f;b+=dc*f;}}
+  return out;
+}
+function kingPos(B,o){for(let r=0;r<N;r++)for(let c=0;c<N;c++){const p=B[r][c];if(p&&p.o===o&&p.t==='K')return[r,c];}return null;}
+function inCheck(B,o){
+  const k=kingPos(B,o);if(!k)return true;
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const p=B[r][c];if(p&&p.o!==o&&targets(B,r,c).some(([a,b])=>a===k[0]&&b===k[1]))return true;}
+  return false;
+}
+function apply(s,m){
+  const B=s.B.map(row=>row.map(x=>x&&{...x})),H=s.H.map(h=>({...h})),o=s.turn;
+  if(m.drop){B[m.tr][m.tc]={t:m.drop,o};H[o][m.drop]--;}
+  else{
+    const p=B[m.fr][m.fc],cap=B[m.tr][m.tc];
+    if(cap){const base=cap.t.replace('+','');if(base!=='K')H[o][base]++;}
+    B[m.tr][m.tc]={t:m.promo?'+'+p.t:p.t,o};B[m.fr][m.fc]=null;
+  }
+  return {B,H,turn:1-o};
+}
+function pseudo(s){
+  const {B,H,turn:o}=s,ms=[];
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    const p=B[r][c];if(!p||p.o!==o)continue;
+    for(const [a,b] of targets(B,r,c)){
+      const canP=['S','B','R','P'].includes(p.t)&&(zone(o,r)||zone(o,a));
+      const must=p.t==='P'&&zone(o,a);
+      if(!must)ms.push({fr:r,fc:c,tr:a,tc:b,promo:false});
+      if(canP)ms.push({fr:r,fc:c,tr:a,tc:b,promo:true});
+    }
+  }
+  for(const t of Object.keys(H[o])){
+    if(!H[o][t])continue;
+    for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+      if(B[r][c])continue;
+      if(t==='P'){
+        if(zone(o,r))continue;
+        let nifu=false;for(let i=0;i<N;i++){const q=B[i][c];if(q&&q.o===o&&q.t==='P')nifu=true;}
+        if(nifu)continue;
+      }
+      ms.push({drop:t,tr:r,tc:c});
+    }
+  }
+  return ms;
+}
+function legal(s,skipUchi){
+  const out=[];
+  for(const m of pseudo(s)){
+    const n=apply(s,m);
+    if(inCheck(n.B,s.turn))continue;
+    if(!skipUchi&&m.drop==='P'&&inCheck(n.B,n.turn)&&legal(n,true).length===0)continue;
+    out.push(m);
+  }
+  return out;
+}
+
+/* ---------- UI ---------- */
+let S,hist,sel,pending,over,moves,lastSq;
+const nm=o=>o===0?'あお':'ピンク';
+function newGame(){S=initial();hist=[];sel=null;pending=null;over=null;lastSq=null;refresh();}
+function refresh(){moves=legal(S);if(!over&&!moves.length)over={winner:1-S.turn,why:'詰み'};draw();}
+function doMove(m){hist.push({S,lastSq});S=apply(S,m);lastSq=[m.tr,m.tc];sel=null;pending=null;refresh();}
+function selMoves(){
+  if(!sel)return[];
+  return moves.filter(m=>sel.hand?m.drop===sel.hand:(!m.drop&&m.fr===sel.r&&m.fc===sel.c));
+}
+function tapSq(r,c){
+  if(over||pending)return;
+  const here=selMoves().filter(m=>m.tr===r&&m.tc===c);
+  if(here.length===1)return doMove(here[0]);
+  if(here.length===2){pending=here;return draw();}
+  const p=S.B[r][c];
+  sel=(p&&p.o===S.turn&&!(sel&&sel.r===r&&sel.c===c))?{r,c}:null;
+  draw();
+}
+function piece(t,o,extra=''){
+  const label=t==='K'?KANJI.K[o]:KANJI[t];
+  return `<span class="k o${o}${o===1?' g':''}${t[0]==='+'?' pr':''}${extra}">${label}</span>`;
+}
+function drawSide(o){
+  const el=document.getElementById('side'+o),h=S.H[o];
+  const items=['R','B','G','S','P'].filter(t=>h[t]).map(t=>`<button class="hp${sel&&sel.hand===t&&S.turn===o?' sel':''}" data-t="${t}" ${over||S.turn!==o?'disabled':''} aria-label="持ち駒 ${KANJI[t]}">${piece(t,0)}${h[t]>1?`<span class="n">${h[t]}</span>`:''}</button>`).join('');
+  el.innerHTML=`<span class="who"><span class="dot"></span>${nm(o)}</span><span class="hand">${items||'<span class="none">持ち駒なし</span>'}</span>${!over&&S.turn===o&&inCheck(S.B,o)?'<span class="check">王手</span>':''}`;
+  el.classList.toggle('on',!over&&S.turn===o);
+  el.querySelectorAll('.hp').forEach(b=>b.onclick=()=>{if(pending)return;const t=b.dataset.t;sel=(sel&&sel.hand===t)?null:{hand:t};draw();});
+}
+function draw(){
+  const bd=document.getElementById('board');bd.innerHTML='';
+  const sm=selMoves();
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    const b=document.createElement('button');const p=S.B[r][c];
+    const isMv=sm.some(m=>m.tr===r&&m.tc===c);
+    b.className='sq'+(isMv?' mv':'')+(isMv&&p?' cap':'')+(lastSq&&lastSq[0]===r&&lastSq[1]===c?' last':'')+(sel&&sel.r===r&&sel.c===c?' sel':'');
+    b.setAttribute('aria-label',`${5-c}${'一二三四五'[r]}`);
+    if(p)b.innerHTML=piece(p.t,p.o);
+    b.onclick=()=>tapSq(r,c);
+    bd.appendChild(b);
+  }
+  drawSide(0);drawSide(1);
+  const msg=document.getElementById('msg');
+  if(over)msg.innerHTML=`<b>${nm(over.winner)}の勝ち！</b>（${over.why}）`;
+  else if(pending)msg.innerHTML='成りますか？';
+  else msg.innerHTML=`<b>${nm(S.turn)}</b>の番${inCheck(S.B,S.turn)?' — 王手されています':''}`;
+  document.getElementById('promo').hidden=!pending;
+  document.getElementById('undo').disabled=!hist.length;
+  document.getElementById('resign').disabled=!!over;
+}
+document.getElementById('pYes').onclick=()=>doMove(pending.find(m=>m.promo));
+document.getElementById('pNo').onclick=()=>doMove(pending.find(m=>!m.promo));
+document.getElementById('undo').onclick=()=>{if(!hist.length)return;({S,lastSq}=hist.pop());over=null;sel=null;pending=null;refresh();};
+document.getElementById('resign').onclick=()=>{if(over)return;over={winner:1-S.turn,why:`${nm(S.turn)}の投了`};sel=null;pending=null;draw();};
+document.getElementById('new').onclick=newGame;
+newGame();
+</script>
+</body>
+</html>
